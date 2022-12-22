@@ -51,6 +51,7 @@ function instantiateBlocking(moduleObject, userImports) {
 
 /**
  * @param {?Object<string, !Function>=} userImports
+ * @suppress {reportUnknownTypes}
  * @return {!Object<!Object>} Wasm import object
  */
 function createImportObject(userImports) {
