@@ -4,11 +4,12 @@ load("@bazel_skylib//lib:versions.bzl", "versions")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_jar")
 load("@bazel_tools//tools/build_defs/repo:jvm.bzl", "jvm_maven_import_external")
 load("@io_bazel_rules_closure//closure:repositories.bzl", "rules_closure_dependencies")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kotlin_repositories", "kt_register_toolchains")
+load("@io_bazel_rules_kotlin//kotlin:repositories.bzl", "kotlin_repositories")
+load("@io_bazel_rules_kotlin//kotlin:core.bzl", "kt_register_toolchains")
 
 _MAVEN_CENTRAL_URLS = ["https://repo1.maven.org/maven2/"]
 
-def setup_j2cl_workspace(**kwargs):
+def setup_j2cl_workspace(omit_kotlin = False, kotlin_compiler = None, kotlin_toolchain = None, **kwargs):
     """Load all dependencies needed for J2CL."""
 
     versions.check("5.1.0")  # The version J2CL currently have a CI setup for.
@@ -233,15 +234,19 @@ j2cl_library(
 ''',
     )
 
-    kotlin_repositories(
-        compiler_release = {
-            "urls": [
-                "https://github.com/JetBrains/kotlin/releases/download/v1.6.10/kotlin-compiler-1.6.10.zip",
-            ],
-            "sha256": "432267996d0d6b4b17ca8de0f878e44d4a099b7e9f1587a98edc4d27e76c215a",
-        },
-    )
-    kt_register_toolchains()
+    if not omit_kotlin:
+        kotlin_repositories(
+            compiler_release = kotlin_compiler or {
+                "urls": [
+                    "https://github.com/JetBrains/kotlin/releases/download/v1.6.10/kotlin-compiler-1.6.10.zip",
+                ],
+                "sha256": "432267996d0d6b4b17ca8de0f878e44d4a099b7e9f1587a98edc4d27e76c215a",
+            },
+        )
+        if kotlin_toolchain:
+            native.register_toolchains(str(kotlin_toolchain))
+        else:
+            kt_register_toolchains()
 
     # Required by protobuf_java_util
     native.bind(
