@@ -13,11 +13,13 @@ def load_j2cl_repo_deps():
         ],
     )
 
-    _github_repo(
+    http_archive(
         name = "io_bazel_rules_closure",
-        repo = "bazelbuild/rules_closure",
-        tag = "6bbbfc7d80474a6a1a4491da7b601c0cab440b07",
-        sha256 = "f014b04be5e90ec2b4e8ac598556895160a2ccd5c97624a60ca6df335bb4b97f",
+        sha256 = "d7a2c881f7cee1d823fa82e04515483f4f1babec691d1e6ca9561f9f814d690a",
+        strip_prefix = "rules_closure-38ec90dbf1a4cdd0da757adbde36aede96509cd5",
+        urls = [
+            "https://github.com/bazelbuild/rules_closure/archive/38ec90dbf1a4cdd0da757adbde36aede96509cd5.tar.gz",
+        ],
     )
 
     _github_repo(
